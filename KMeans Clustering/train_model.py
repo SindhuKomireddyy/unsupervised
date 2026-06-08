@@ -1,52 +1,40 @@
-import pandas as pd
 import pickle
 import os
 
+from sklearn.datasets import load_iris
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 
 
-# Create models folder
+# create model folder
 os.makedirs(
     "models",
     exist_ok=True
 )
 
 
-# Load dataset
-df = pd.read_csv(
-    "data/iris.csv"
-)
+# Load Iris dataset
+
+iris = load_iris()
+
+X = iris.data
 
 
-# Remove Id column
-if "Id" in df.columns:
-    df = df.drop(
-        "Id",
-        axis=1
-    )
+# Feature scaling
 
-
-# Remove Species column
-if "Species" in df.columns:
-    df = df.drop(
-        "Species",
-        axis=1
-    )
-
-
-# Scaling
 scaler = StandardScaler()
 
 X_scaled = scaler.fit_transform(
-    df
+    X
 )
 
 
-# Train KMeans model
+# KMeans model
+
 model = KMeans(
     n_clusters=3,
-    random_state=42
+    random_state=42,
+    n_init=10
 )
 
 
@@ -56,29 +44,31 @@ model.fit(
 
 
 # Save model
+
 with open(
     "models/kmeans_model.pkl",
     "wb"
-) as f:
+) as file:
 
     pickle.dump(
         model,
-        f
+        file
     )
 
 
 # Save scaler
+
 with open(
     "models/scaler.pkl",
     "wb"
-) as f:
+) as file:
 
     pickle.dump(
         scaler,
-        f
+        file
     )
 
 
 print(
-    "KMeans Model Trained Successfully"
+    "KMeans model saved successfully"
 )
